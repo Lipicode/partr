@@ -1,5 +1,6 @@
 {
   "whitelist": [
-    "https://lipicode.github.io/partr/iframedetection.html"
+    "https://lipicode.github.io/partr/"
+    "https://lipicode.github.io/partr/index.html"
   ]
 }
