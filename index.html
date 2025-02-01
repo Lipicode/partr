@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PartrSender - Discord Webhook Sender</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Inter',sans-serif;background:#2a2a2a;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px;color:#fff;overflow-x:hidden}.container{background:rgba(0,0,0,0.7);backdrop-filter:blur(12px);border-radius:10px;max-width:500px;width:100%;padding:40px;box-shadow:0 10px 30px rgba(0,0,0,0.5);animation:fadeIn 1s ease-in-out}@keyframes fadeIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}h1{text-align:center;color:#fff;font-size:28px;margin-bottom:20px;text-shadow:0 0 15px rgba(255,255,255,0.7)}label{font-weight:600;color:#f0f0f0;margin-bottom:5px;display:block}input,textarea{width:100%;padding:12px;margin-bottom:15px;border:2px solid #444;border-radius:6px;font-size:14px;background:#333;color:#ddd;transition:all 0.3s ease-in-out}input:focus,textarea:focus{border-color:#4c6ef5;outline:none;box-shadow:0 0 5px rgba(76,110,245,0.8)}button{width:100%;padding:12px;background:linear-gradient(90deg,#6a11cb,#2575fc);color:#fff;border:none;font-size:16px;border-radius:5px;cursor:pointer;transition:transform 0.3s ease-in-out,background 0.3s ease}button:hover{background-color:#5a67d8;transform:translateY(-3px)}button:active{transform:translateY(2px)}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>PartrSender</h1>
+<form id="webhookForm">
+<label for="webhookUrl">Discord Webhook URL</label>
+<input type="url" id="webhookUrl" placeholder="Enter your webhook URL" required>
+<label for="username">Username (Optional)</label>
+<input type="text" id="username" placeholder="Enter username">
+<label for="avatarUrl">Avatar URL (Optional)</label>
+<input type="url" id="avatarUrl" placeholder="Enter avatar URL">
+<label for="content">Message Content</label>
+<textarea id="content" rows="5" placeholder="Enter your message" required></textarea>
+<button type="submit">Send Webhook</button>
+</form>
+<div class="response" id="response"></div>
+</div>
+<script>
+fetch('whitelisted.json').then(response=>response.json()).then(data=>{const origin=window.location.origin;if(!data.whitelist.includes(origin)){window.location.href='iframedetection.html'}})
+const form=document.getElementById('webhookForm');const responseDiv=document.getElementById('response');form.addEventListener('submit',function(event){event.preventDefault();responseDiv.textContent='';const webhookUrl=document.getElementById('webhookUrl').value.trim();const username=document.getElementById('username').value.trim();const avatarUrl=document.getElementById('avatarUrl').value.trim();const content=document.getElementById('content').value.trim();if(!webhookUrl||!content){responseDiv.textContent='Webhook URL and Message Content are required.';responseDiv.className='response error';return}const payload={content:content};if(username)payload.username=username;if(avatarUrl)payload.avatar_url=avatarUrl;responseDiv.textContent='Sending...';responseDiv.className='response';fetch(webhookUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).then(response=>{if(response.ok){responseDiv.textContent='Message sent successfully!';responseDiv.className='response success';form.reset()}else{responseDiv.textContent='Failed to send message.';responseDiv.className='response error'}}).catch(error=>{responseDiv.textContent='Error: '+error.message;responseDiv.className='response error'}})
+</script>
+</body>
+</html>
